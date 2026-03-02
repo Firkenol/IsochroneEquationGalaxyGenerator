@@ -91,7 +91,7 @@ ax_N = plt.axes([0.15, 0.15, 0.7, 0.02], facecolor='darkgray')
 ax_B = plt.axes([0.15, 0.10, 0.7, 0.02], facecolor='darkgray')
 ax_T = plt.axes([0.15, 0.05, 0.7, 0.02], facecolor='darkgray')
 
-slider_Zoom = Slider(ax_Zoom, 'Zoom (Scale)', 2.0, 20.0, valinit=Zoom_init, color='#8d9cf5')
+slider_Zoom = Slider(ax_Zoom, 'Zoom (Scale)', 0.2, 20.0, valinit=Zoom_init, color='#8d9cf5')
 slider_N = Slider(ax_N, 'Winding (N)', 5.0, 50.0, valinit=N_init, color='#c88df5')
 slider_B = Slider(ax_B, 'Bulge (B)', 0.1, 10.0, valinit=B_init, color='#c88df5')
 slider_T = Slider(ax_T, 'Rotation (T)', 0.0, 3.0, valinit=T_init, color='#c88df5')
