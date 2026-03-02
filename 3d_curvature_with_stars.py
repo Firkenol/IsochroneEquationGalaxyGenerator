@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 
 fig = plt.figure(figsize=(9, 9))
-plt.subplots_adjust(bottom=0.35)
+plt.subplots_adjust(bottom=0.25)
 fig.patch.set_facecolor('black')
 
 ax = fig.add_subplot(111, projection='3d')
@@ -17,11 +17,22 @@ B_init = 6.4
 C_init = 0.67
 Ct_init = 0.296
 T_init = 1.2
-Zoom_init = 5.0
+Zoom_init = 8.0
+# left column ui params
+ax_Zoom = plt.axes([0.10, 0.20, 0.35, 0.02], facecolor='darkgray')
+ax_N = plt.axes([0.10, 0.15, 0.35, 0.02], facecolor='darkgray')
+ax_B = plt.axes([0.10, 0.10, 0.35, 0.02], facecolor='darkgray')
+ax_T = plt.axes([0.10, 0.05, 0.35, 0.02], facecolor='darkgray')
+
+# right column ui params
+ax_C = plt.axes([0.55, 0.20, 0.35, 0.02], facecolor='darkgray')
+ax_Ct = plt.axes([0.55, 0.15, 0.35, 0.02], facecolor='darkgray')
+ax_d = plt.axes([0.55, 0.10, 0.35, 0.02], facecolor='darkgray')
+ax_Zthick = plt.axes([0.55, 0.05, 0.35, 0.02], facecolor='darkgray')
 
 # scatter params
-d_rad_init = 0.15 
-d_z_init = 0.25 
+d_rad_init = 0.131 
+d_z_init = 0.02 
 p3 = 1330
 
 # lock rng seed so stars dont regenerate on slider drag
@@ -30,8 +41,8 @@ np.random.seed(42)
 t = np.linspace(0.001, 1.0, p3)
 
 # pre-calc gaussian noise for radius and z-axis
-n_r = [np.random.normal(0, 1, p3) for _ in range(4)]
-n_z = [np.random.normal(0, 1, p3) for _ in range(4)]
+n_r = [np.random.normal(0, 1, p3) * np.random.uniform(0, 1, p3) for _ in range(4)]
+n_z = [np.random.normal(0, 1, p3) * np.random.uniform(0, 1, p3) for _ in range(4)]
 
 # s_u magnitude variation
 rand_s = np.random.rand(4, p3)
@@ -39,6 +50,12 @@ sd, sm = 5.0, 4.97
 sizes = [np.clip((rand_s[i] - 0.4) * sd + sm, 0.1, None) for i in range(4)]
 
 def calc_stars(A, N, B, C, Ct, T_rot, d_rad, d_z):
+    # prevent division by zero crashes if slider hits 0 or C equals Ct
+    if C == 0:
+        C = 0.001
+    if C == Ct:
+        C += 0.001
+        
     phi_1 = t * 2 * np.pi * C
     phi_2 = t * 2 * np.pi * (C + 0.35)
     
@@ -104,26 +121,28 @@ ax_B = plt.axes([0.15, 0.15, 0.7, 0.02], facecolor='darkgray')
 ax_T = plt.axes([0.15, 0.10, 0.7, 0.02], facecolor='darkgray')
 ax_Zthick = plt.axes([0.15, 0.05, 0.7, 0.02], facecolor='darkgray')
 
-slider_Zoom = Slider(ax_Zoom, 'Zoom (Scale)', 0.2, 10.0, valinit=Zoom_init, color='#8d9cf5')
+slider_Zoom = Slider(ax_Zoom, 'Zoom (Scale)', 0.2, 15.0, valinit=Zoom_init, color='#8d9cf5')
 slider_N = Slider(ax_N, 'Winding (N)', 5.0, 50.0, valinit=N_init, color='#c88df5')
 slider_B = Slider(ax_B, 'Bulge (B)', 0.1, 10.0, valinit=B_init, color='#c88df5')
 slider_T = Slider(ax_T, 'Rotation (T)', 0.0, 3.0, valinit=T_init, color='#c88df5')
-slider_Zthick = Slider(ax_Zthick, 'Thickness (Z)', 0.0, 1.0, valinit=d_z_init, color='#8d9cf5')
+slider_C = Slider(ax_C, 'Length (C)', 0.0, 2.0, valinit=C_init, color='#8d9cf5')
+slider_Ct = Slider(ax_Ct, 'End Width (Ct)', 0.0, 2.0, valinit=Ct_init, color='#8d9cf5')
+slider_d = Slider(ax_d, 'Strand Width (d)', 0.0, 0.2, valinit=d_rad_init, color='#8d9cf5')
+slider_Zthick = Slider(ax_Zthick, 'Thickness (Z)', 0.0, 0.5, valinit=d_z_init, color='#8d9cf5')
 
-for s in [slider_Zoom, slider_N, slider_B, slider_T, slider_Zthick]:
+for s in [slider_Zoom, slider_N, slider_B, slider_T, slider_C, slider_Ct, slider_d, slider_Zthick]:
     s.label.set_color('white')
     s.valtext.set_color('white')
 
 def update(val):
-    n_arms = calc_stars(A_init, slider_N.val, slider_B.val, C_init, Ct_init, slider_T.val, d_rad_init, slider_Zthick.val)
+    n_arms = calc_stars(A_init, slider_N.val, slider_B.val, slider_C.val, slider_Ct.val, slider_T.val, slider_d.val, slider_Zthick.val)
     
     for idx, scat in enumerate(scatters):
-        # mpl scatter needs 2d array for offsets
         offsets = np.c_[n_arms[idx][0], n_arms[idx][1]]
         scat.set_offsets(offsets)
         scat.set_3d_properties(n_arms[idx][2], 'z')
         
-    z_val = slider_Zoom.val
+    z_val = slider_Zoom.val 
     ax.set_xlim([-z_val, z_val])
     ax.set_ylim([-z_val, z_val])
     ax.set_zlim([-z_val, z_val])
@@ -134,6 +153,9 @@ slider_Zoom.on_changed(update)
 slider_N.on_changed(update)
 slider_B.on_changed(update)
 slider_T.on_changed(update)
+slider_C.on_changed(update)
+slider_Ct.on_changed(update)
+slider_d.on_changed(update)
 slider_Zthick.on_changed(update)
 
 plt.show()
