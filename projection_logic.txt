@@ -1,0 +1,21 @@
+Algorithm: 3D to 2D Projection (ctoc)
+Input: 
+  Coordinate (x0, y0, z0)
+  Azimuth angle (a), Elevation angle (a2)
+  Focal distance (d1)
+Output: 2D Screen Coordinate (X_screen, Y_screen)
+
+1. Compute base yaw radius:
+   yaw_x = sqrt(x0^2 + y0^2)
+   
+2. Calculate perspective denominator (depth scaling):
+   proj_denom = d1 - cos(a2) * yaw_x
+   
+3. Apply trigonometric rotation matrix:
+   yaw_angle = a + arctan(y0 / x0)
+   
+4. Compute screen coordinates:
+   X_screen = (proj_denom * cos(yaw_angle)) / scale_factor
+   Y_screen = (yaw_x * sin(a2) * sin(yaw_angle) + z0 * cos(a2)) / scale_factor
+   
+5. Return (X_screen, Y_screen)
