@@ -4,7 +4,7 @@ from matplotlib.widgets import Slider
 
 # initialize figure and 2d axis
 fig, ax = plt.subplots(figsize=(9, 9))
-plt.subplots_adjust(bottom=0.35)
+plt.subplots_adjust(bottom=0.4)
 ax.set_aspect('equal')
 ax.set_facecolor('black')
 fig.patch.set_facecolor('black')
@@ -96,12 +96,15 @@ ax.set_ylim(-8, 8)
 ax.set_title('Parametric Milky Way Implementation (4-Arm Scaffold)', color='white')
 
 # interactive sliders
+ax_d1 = plt.axes([0.15, 0.30, 0.7, 0.02], facecolor='darkgray')
 ax_N = plt.axes([0.15, 0.25, 0.7, 0.02], facecolor='darkgray')
 ax_B = plt.axes([0.15, 0.20, 0.7, 0.02], facecolor='darkgray')
 ax_T = plt.axes([0.15, 0.15, 0.7, 0.02], facecolor='darkgray')
 ax_a = plt.axes([0.15, 0.10, 0.7, 0.02], facecolor='darkgray')
 ax_a2 = plt.axes([0.15, 0.05, 0.7, 0.02], facecolor='darkgray')
 
+
+slider_d1 = Slider(ax_d1, 'Perspective (d1)', 1.5, 15.0, valinit=d1_init, color='#8d9cf5')
 slider_N = Slider(ax_N, 'Winding (N)', 5.0, 50.0, valinit=N_init, color='#c88df5')
 slider_B = Slider(ax_B, 'Bulge (B)', 0.1, 10.0, valinit=B_init, color='#c88df5')
 slider_T = Slider(ax_T, 'Rotation (T)', 0.0, 3.0, valinit=T_init, color='#c88df5')
@@ -113,19 +116,21 @@ for s in [slider_N, slider_B, slider_T, slider_a, slider_a2]:
     s.valtext.set_color('white')
 
 def update(val):
+    d1_val = slider_d1.val
     N_val = slider_N.val
     B_val = slider_B.val
     T_val = slider_T.val
     a_val = slider_a.val
     a2_val = slider_a2.val
     
-    new_arms = calculate_galaxy(A_init, N_val, B_val, C_init, Ct_init, T_val, a_val, a2_val, d1_init)
+    new_arms = calculate_galaxy(A_init, N_val, B_val, C_init, Ct_init, T_val, a_val, a2_val, d1_val)
     
     for idx, line in enumerate(lines):
         line.set_data(new_arms[idx][0], new_arms[idx][1])
         
     fig.canvas.draw_idle()
 
+slider_d1.on_changed(update)
 slider_N.on_changed(update)
 slider_B.on_changed(update)
 slider_T.on_changed(update)
