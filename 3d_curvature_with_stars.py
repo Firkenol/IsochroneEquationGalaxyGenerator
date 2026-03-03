@@ -33,7 +33,8 @@ t = np.linspace(0.001, 1.0, p3)
 
 # pre-calc gaussian noise for radius and z-axis
 n_r = [np.random.normal(0, 1, p3) * np.random.uniform(0, 1, p3) for _ in range(4)]
-n_z = [np.random.normal(0, 1, p3) * np.random.uniform(0, 1, p3) for _ in range(4)]
+#altered to increase clustering upon thickness increases
+n_z = [np.random.normal(0, 1, p3) * np.random.uniform(0, 1, p3)**3 for _ in range(4)]
 
 # s_u magnitude variation
 rand_s = np.random.rand(4, p3)
