@@ -3,10 +3,11 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 
 fig = plt.figure(figsize=(9, 9))
-plt.subplots_adjust(bottom=0.25)
 fig.patch.set_facecolor('black')
 
-ax = fig.add_subplot(111, projection='3d')
+# strictly bound the 3d plot to the top 70% of the window to prevent mouse grab overlap
+# layout is [left, bottom, width, height]
+ax = fig.add_axes([0.0, 0.30, 1.0, 0.70], projection='3d')
 ax.set_facecolor('black')
 ax.axis('off')
 
@@ -18,17 +19,7 @@ C_init = 0.67
 Ct_init = 0.296
 T_init = 1.2
 Zoom_init = 8.0
-# left column ui params
-ax_Zoom = plt.axes([0.10, 0.20, 0.35, 0.02], facecolor='darkgray')
-ax_N = plt.axes([0.10, 0.15, 0.35, 0.02], facecolor='darkgray')
-ax_B = plt.axes([0.10, 0.10, 0.35, 0.02], facecolor='darkgray')
-ax_T = plt.axes([0.10, 0.05, 0.35, 0.02], facecolor='darkgray')
 
-# right column ui params
-ax_C = plt.axes([0.55, 0.20, 0.35, 0.02], facecolor='darkgray')
-ax_Ct = plt.axes([0.55, 0.15, 0.35, 0.02], facecolor='darkgray')
-ax_d = plt.axes([0.55, 0.10, 0.35, 0.02], facecolor='darkgray')
-ax_Zthick = plt.axes([0.55, 0.05, 0.35, 0.02], facecolor='darkgray')
 
 # scatter params
 d_rad_init = 0.131 
@@ -114,12 +105,17 @@ ax.set_ylim([-Zoom_init, Zoom_init])
 ax.set_zlim([-Zoom_init, Zoom_init])
 ax.set_title('Stochastic Density Galaxy Model', color='white')
 
-# ui
-ax_Zoom = plt.axes([0.15, 0.25, 0.7, 0.02], facecolor='darkgray')
-ax_N = plt.axes([0.15, 0.20, 0.7, 0.02], facecolor='darkgray')
-ax_B = plt.axes([0.15, 0.15, 0.7, 0.02], facecolor='darkgray')
-ax_T = plt.axes([0.15, 0.10, 0.7, 0.02], facecolor='darkgray')
-ax_Zthick = plt.axes([0.15, 0.05, 0.7, 0.02], facecolor='darkgray')
+# left column ui params
+ax_Zoom = plt.axes([0.15, 0.20, 0.20, 0.02], facecolor='darkgray')
+ax_N = plt.axes([0.15, 0.15, 0.20, 0.02], facecolor='darkgray')
+ax_B = plt.axes([0.15, 0.10, 0.20, 0.02], facecolor='darkgray')
+ax_T = plt.axes([0.15, 0.05, 0.20, 0.02], facecolor='darkgray')
+
+# right column ui params
+ax_C = plt.axes([0.70, 0.20, 0.20, 0.02], facecolor='darkgray')
+ax_Ct = plt.axes([0.70, 0.15, 0.20, 0.02], facecolor='darkgray')
+ax_d = plt.axes([0.70, 0.10, 0.20, 0.02], facecolor='darkgray')
+ax_Zthick = plt.axes([0.70, 0.05, 0.20, 0.02], facecolor='darkgray')
 
 slider_Zoom = Slider(ax_Zoom, 'Zoom (Scale)', 0.2, 15.0, valinit=Zoom_init, color='#8d9cf5')
 slider_N = Slider(ax_N, 'Winding (N)', 5.0, 50.0, valinit=N_init, color='#c88df5')
