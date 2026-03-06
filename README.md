@@ -60,6 +60,16 @@ Strand Width (d): Modifies the radial spread of the stochastic star noise.
 
 Thickness (Z): Adjusts the vertical bounds of the galactic disk.
 
+Recreating Specific Galaxies (CSV Data)
+
+Included in this repository is a CSV file containing the specific parameter values used to model known galaxies (Milky Way, Whirlpool M51a, Pinwheel M101, and NGC 1300). 
+
+Desmos Implementation:
+These parameters were natively calibrated for the 2D visual proof. You can import or manually input these values directly into the provided Desmos link to accurately recreate the exact morphological structures of these galaxies.
+
+Python Implementation Compatibility Note:
+Please note that these exact CSV parameters will not translate perfectly 1-to-1 into the Python native 3D models (`3d_curvature_script.py` and `3d_curvature_with_stars.py`). Because the Python scripts abandon the projection matrix in favor of true $\mathbb{R}^3$ spatial mapping and introduce mathematically constrained Z-axis thickness, the underlying algorithms have shifted. You will need to manually adjust the sliders in the Python UI to recalibrate and achieve the same visual results as the Desmos environment.
+
 Installation and Usage
 Dependencies:
 
